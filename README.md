@@ -207,7 +207,7 @@ curl -X POST http://localhost:4000/api/purchase/digital-gold \
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PORT` | Server port | `4000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/simplifymoney` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/simplifygold` |
 | `OPENAI_API_KEY` | OpenAI API key (optional) | - |
 
 ### LLM Behavior
