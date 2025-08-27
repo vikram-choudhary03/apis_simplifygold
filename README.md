@@ -43,6 +43,7 @@ This project emulates the KuberAI gold investment workflow from the Simplify Mon
    PORT=4000
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
    OPENAI_API_KEY=sk-your-openai-key  # Optional
+   GEMINI_API_KEY=your-gemini-api-key  # Optional
    ```
 
 3. **Start the server**
@@ -204,16 +205,17 @@ curl -X POST http://localhost:4000/api/purchase/digital-gold \
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `4000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/simplifygold` |
-| `OPENAI_API_KEY` | OpenAI API key (optional) | - |
-
+| Variable                     | Description                                      | Default |
+|------------------------------|--------------------------------------------------|---------|
+| `PORT`                       | Server port                                     | `4000`  |
+| `MONGODB_URI`                | MongoDB connection string                       | `mongodb://localhost:27017/simplifygold` |
+| `OPENAI_API_KEY`             | OpenAI API key (optional)                       | -       |
+| `GEMINI_API_KEY`             | API key for Gemini AI (optional)                | -       |
 ### LLM Behavior
 
 - **With OpenAI API Key**: Uses GPT-4o-mini for intelligent responses
-- **Without OpenAI API Key**: Falls back to rule-based responses for gold queries
+- **With Gemini API Key**: Uses Gemini AI as a fallback for intelligent responses
+- **Without AI Keys**: Falls back to rule-based responses for gold queries
 - **Intent Detection**: Always uses rule-based keyword matching for gold-related queries
 
 ## Deployment
@@ -227,6 +229,8 @@ curl -X POST http://localhost:4000/api/purchase/digital-gold \
    - `PORT`: `4000`
    - `MONGODB_URI`: Your Atlas connection string
    - `OPENAI_API_KEY`: Your OpenAI key (optional)
+   - `GEMINI_API_KEY`: Your Gemini AI key (optional)
+   - `GOOGLE_APPLICATION_CREDENTIALS`: Path to your service account key file (optional)
 5. Set build command: `npm install`
 6. Set start command: `npm start`
 
