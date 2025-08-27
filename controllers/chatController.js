@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { askLLM, detectGoldIntent, ruleBasedGoldAnswer, nudgeToDigitalGold } from "../services/llm.js";
+import { getGeminiResponse } from "../services/gemini.js"; // Import Gemini AI service
 
 const ChatInput = z.object({
 	message: z.string().min(1, "message is required"),
@@ -19,12 +20,23 @@ export async function handleChat(req, res) {
 
 	const isGold = detectGoldIntent(message);
 	let answer = null;
-
+	
 	if (isGold) {
 		answer = await askLLM(message);
+
+		// Fallback to Gemini AI if OpenAI fails
+		if (!answer && process.env.GEMINI_API_KEY) {
+			try {
+				answer = await getGeminiResponse(message);
+			} catch (error) {
+				console.error("Gemini AI fallback failed:", error.message);
+			}
+		}
+		
 		if (!answer) {
 			answer = ruleBasedGoldAnswer(message);
 		}
+
 		const nudge = nudgeToDigitalGold();
 		return res.json({
 			intent: "gold_investment",
@@ -46,6 +58,17 @@ export async function handleChat(req, res) {
 	}
 
 	// Non-gold: try LLM once, else echo guidance
-	answer = (await askLLM(message)) || "I can help with gold investments. Ask me about gold price, how to buy, or SGBs.";
+	answer = (await askLLM(message)) || null;
+
+	// Fallback to Gemini AI for non-gold queries
+	if (!answer && process.env.GEMINI_API_KEY) {
+		try {
+			answer = await getGeminiResponse(message);
+		} catch (error) {
+			console.error("Gemini AI fallback failed:", error.message);
+		}
+	}
+
+	answer = answer || "I can help with gold investments. Ask me about gold price, how to buy, or SGBs.";
 	return res.json({ intent: "generic", answer });
 }
